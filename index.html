@@ -47,16 +47,17 @@
 
 <body class="wrap">
     <header>APICloud</header>
-    <section class="flex-1">
+    <!-- <section class="flex-1">
 
-    </section>
-    <footer>Copyright &copy;<span id="year"></span></footer>
+    </section> -->
+
+    <footer>Copyright &copy;<span id="year"></span><span id="seconds" style="color:red;"></span></footer>
 </body>
 <script type="text/javascript" src="./script/api.js"></script>
 <script type="text/javascript">
     apiready = function() {
         //输出Log，Log将显示在APICloud Studio控制台
-        console.log("Hello World! Hello APICloud!");
+        //console.log("Hello World! Hello APICloud!");
 
         var header = $api.dom('header'); // 获取 header 标签元素
         var footer = $api.dom('footer'); // 获取 footer 标签元素
@@ -82,8 +83,46 @@
         // 获取当前年份时间，并加载显示到页面
         var year = $api.byId('year');
         year.innerHTML = new Date().getFullYear();
-    };
 
+        //var seconds = $api.byId('seconds');
+
+
+        //var num = 0;
+        //setITV();
+
+        function setITV() {
+            var i = 0;
+            var itv = setInterval(function() {
+                i++;
+                if (i > 10) {
+                    num++;
+                    console.log(num);
+                    seconds.innerHTML = num;
+                    clearInterval(itv);
+                    setITV();
+                } else {
+                    num++;
+                    console.log(num);
+                    seconds.innerHTML = num;
+                }
+            }, 1000);
+        }
+
+        var worker = new Worker('./script/worker.js');
+        console.log("新建线程", JSON.stringify(worker));
+
+        worker.onmessage = function(event) {
+            console.log('接收到子线程的消息 ' + event.data);
+            //$("#getMessage").html(event.data);
+        }
+
+        function sendMessage() {
+            worker.postMessage({
+                cmd: 'fire',
+                name: 'duan'
+            });
+        }
+    };
 </script>
 
 </html>

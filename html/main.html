@@ -28,10 +28,12 @@
 
 <body>
     <label>Hello APP</label>
+    <div tapmode onclick="sendMessage()" style="border:1px solid red;background-color:red;line-height:60px;width:60%;margin:0 20%;">点击向子线程发送信息</div>
     <div id='sys-info'></div>
 </body>
 <script type="text/javascript" src="../script/api.js"></script>
 <script type="text/javascript">
+    var sendMessage;
     apiready = function() {
         var ver = api.version;
         var sType = api.systemType;
@@ -64,6 +66,21 @@
         str += '</ul>';
 
         $api.byId('sys-info').innerHTML = str;
+
+        sendMessage = function() {
+            console.log("点击了按钮");
+            worker.postMessage({
+                cmd: 'fire',
+                name: 'duan'
+            });
+        }
+
+        var worker = new Worker('../script/worker.js');
+        console.log("新建线程", JSON.stringify(worker));
+        worker.onmessage = function(event) {
+            console.log('接收到子线程的消息 ' + event.data);
+        }
+
 
     };
 </script>
